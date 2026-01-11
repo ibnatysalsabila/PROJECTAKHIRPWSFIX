@@ -152,3 +152,31 @@ app.get('/login', (req, res) => res.sendFile(path.join(__dirname, 'public', 'log
 app.get('/register', (req, res) => res.sendFile(path.join(__dirname, 'public', 'register.html')));
 app.get('/dashboard', (req, res) => res.sendFile(path.join(__dirname, 'public', 'dashboard.html')));
 app.get('/docs', (req, res) => res.sendFile(path.join(__dirname, 'public', 'docs.html')));
+
+// PRODUCT/FOOD API ROUTING dengan API Key validation
+const productController = require('./controllers/productController');
+
+// GET Foods dengan API Key validation
+app.get('/api/foods', async (req, res) => {
+    const { key } = req.query;
+    
+    if (!key) {
+        return res.status(401).json({ error: "API Key diperlukan" });
+    }
+    
+    try {
+        // Validasi API Key
+        const [validKey] = await db.execute('SELECT user_id FROM apikeys WHERE key_value = ? AND status = "ACTIVE"', [key]);
+        
+        if (validKey.length === 0) {
+            return res.status(403).json({ error: "API Key tidak valid atau tidak aktif" });
+        }
+        
+        // API Key valid, return semua foods
+        const [foods] = await db.execute('SELECT * FROM foods');
+        res.json(foods);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
