@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Foodify Developer</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-pink: #FB6F92;
+            --soft-pink: #FFE5EC;
+            --text-dark: #2D3436;
+            --text-gray: #636E72;
+            --bg-gradient: linear-gradient(135deg, #FFF0F3 0%, #FFFFFF 100%);
+        }
+
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            background: var(--bg-gradient); 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            height: 100vh; 
+            margin: 0; 
+            color: var(--text-dark);
+        }
+
+        .login-card { 
+            background: white; 
+            padding: 50px 40px; 
+            border-radius: 24px; 
+            box-shadow: 0 20px 40px rgba(251, 111, 146, 0.1); 
+            width: 100%; 
+            max-width: 400px; 
+            text-align: center;
+            border: 1px solid var(--soft-pink);
+            position: relative;
+        }
+
+        .logo-small {
+            color: var(--primary-pink);
+            font-weight: 800;
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+
+        h2 { 
+            font-weight: 800; 
+            font-size: 1.8rem; 
+            margin: 0 0 10px 0;
+            color: #1a1a1a;
+        }
+
+        p.subtitle { 
+            color: var(--text-gray); 
+            margin-bottom: 30px; 
+            font-size: 0.95rem;
+        }
+
+        .input-group {
+            text-align: left;
+            margin-bottom: 15px;
+        }
+
+        input { 
+            width: 100%; 
+            padding: 14px 18px; 
+            border: 2px solid #F1F5F9; 
+            border-radius: 14px; 
+            box-sizing: border-box; 
+            background-color: #F8FAFC; 
+            font-family: inherit;
+            font-size: 0.95rem;
+            transition: 0.3s;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--primary-pink);
+            background-color: white;
+            box-shadow: 0 0 0 4px var(--soft-pink);
+        }
+
+        button { 
+            width: 100%; 
+            padding: 16px; 
+            background: linear-gradient(45deg, var(--primary-pink), #FF8FAB); 
+            color: white; 
+            border: none; 
+            border-radius: 14px; 
+            font-weight: 700; 
+            font-size: 1rem;
+            cursor: pointer; 
+            transition: 0.3s; 
+            box-shadow: 0 8px 15px rgba(251, 111, 146, 0.3);
+            margin-top: 10px;
+        }
+
+        button:hover:not(:disabled) { 
+            transform: translateY(-2px);
+            box-shadow: 0 12px 20px rgba(251, 111, 146, 0.4);
+        }
+
+        button:disabled {
+            background: #cbd5e1;
+            box-shadow: none;
+            cursor: not-allowed;
+        }
+
+        .footer-text {
+            margin-top: 25px;
+            font-size: 0.9rem;
+            color: var(--text-gray);
+        }
+
+        a { 
+            color: var(--primary-pink); 
+            text-decoration: none; 
+            font-weight: 700; 
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        /* Decorative Blur */
+        .blur-dot {
+            position: absolute;
+            width: 150px;
+            height: 150px;
+            background: var(--primary-pink);
+            filter: blur(80px);
+            opacity: 0.1;
+            z-index: -1;
+        }
+    </style>
+</head>
+<body>
+    <div class="blur-dot" style="top: 10%; left: 10%;"></div>
+    <div class="blur-dot" style="bottom: 10%; right: 10%;"></div>
+
+    <div class="login-card">
+        <a href="/" class="logo-small">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect width="24" height="24" rx="6" fill="#FB6F92"/>
+                <path d="M7 12L10 15L17 8" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Foodify.
+        </a>
+        <h2>Welcome Back</h2>
+        <p class="subtitle">Sign in to manage your API keys</p>
+        
+        <div class="input-group">
+            <input type="text" id="username" placeholder="Username">
+        </div>
+        <div class="input-group">
+            <input type="password" id="password" placeholder="Password">
+        </div>
+        
+        <button id="loginBtn" onclick="handleLogin()">Login</button>
+        
+        <p class="footer-text">Belum punya akun? <a href="/register">Register</a></p>
+    </div>
+
+    <script>
+        async function handleLogin() {
+            const name = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const loginBtn = document.getElementById('loginBtn');
+            
+            if (!name || !password) return alert("Isi semua data!");
+
+            loginBtn.innerText = "Authenticating...";
+            loginBtn.disabled = true;
+
+            try {
+                const response = await fetch('/api/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, password })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    localStorage.setItem('userId', data.userId);
+                    localStorage.setItem('userName', data.name);
+                    localStorage.setItem('userRole', data.role);
+
+                    if (data.role === 'admin') {
+                        window.location.href = "/admin";
+                    } else {
+                        window.location.href = "/dashboard";
+                    }
+                } else {
+                    alert(data.message || "Login Gagal!");
+                    loginBtn.innerText = "Login to Dashboard";
+                    loginBtn.disabled = false;
+                }
+            } catch (err) {
+                console.error("Login Error:", err);
+                alert("Koneksi ke server gagal");
+                loginBtn.innerText = "Login";
+                loginBtn.disabled = false;
+            }
+        }
+    </script>
+</body>
+</html>
