@@ -101,3 +101,16 @@ app.post('/api/login', async (req, res) => {
         res.status(500).json({ success: false, message: "Database error: " + err.message }); 
     }
 });
+
+// API KEY MANAGEMENT
+app.post('/api/keys/generate', async (req, res) => {
+    const { user_id } = req.body;
+    const newKey = 'sk-food-' + crypto.randomBytes(16).toString('hex');
+    await db.execute('INSERT INTO apikeys (user_id, key_value) VALUES (?, ?)', [user_id, newKey]);
+    res.json({ success: true, key: newKey });
+});
+
+app.get('/api/keys/:user_id', async (req, res) => {
+    const [rows] = await db.execute('SELECT * FROM apikeys WHERE user_id = ? ORDER BY created_at DESC', [req.params.user_id]);
+    res.json(rows);
+});
