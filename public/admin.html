@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - Foodify</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #FB6F92; /* Foodify Pink */
+            --primary-light: #FFE5EC;
+            --primary-hover: #FF8FAB;
+            --danger: #ff7675;
+            --sidebar-bg: #FFFFFF;
+            --bg-body: #FFF0F3; /* Pink muda background */
+            --border: #FCE1E8;
+            --text-gray: #636E72;
+            --dark: #2D3436;
+            --white: #ffffff;
+            --success: #10b981;
+        }
+
+        * { box-sizing: border-box; }
+
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            margin: 0; 
+            display: flex; 
+            background-color: var(--bg-body); 
+            height: 100vh; 
+            overflow: hidden; 
+            color: var(--dark);
+        }
+
+        /* Sidebar Navigation */
+        .sidebar { 
+            width: 280px; 
+            background: var(--sidebar-bg); 
+            border-right: 1px solid var(--border);
+            display: flex; 
+            flex-direction: column; 
+            padding: 40px 0; 
+            flex-shrink: 0; 
+        }
+        
+        .brand { 
+            padding: 0 30px 40px; 
+            color: var(--primary); 
+            font-weight: 800; 
+            font-size: 1.6rem; 
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .nav-wrapper { flex-grow: 1; padding: 0 15px; }
+        
+        .nav-link { 
+            padding: 14px 20px; 
+            color: var(--text-gray); 
+            text-decoration: none; 
+            display: flex; 
+            align-items: center; 
+            gap: 12px; 
+            cursor: pointer; 
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
+            border-radius: 12px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .nav-link:hover { 
+            background: var(--primary-light); 
+            color: var(--primary); 
+        }
+
+        .nav-link.active { 
+            background: var(--primary); 
+            color: white; 
+            box-shadow: 0 8px 20px rgba(251, 111, 146, 0.25);
+        }
+        
+        .logout-link { 
+            margin: 20px 15px 0;
+            padding: 14px 20px; 
+            color: var(--danger); 
+            text-decoration: none; 
+            font-weight: 700; 
+            display: flex; 
+            align-items: center; 
+            gap: 10px; 
+            border-radius: 12px;
+            transition: 0.3s;
+            cursor: pointer;
+        }
+        .logout-link:hover { background: #fff5f5; }
+
+        /* Main Content */
+        .content { flex: 1; overflow-y: auto; padding: 50px 60px; scroll-behavior: smooth; }
+        .tab-content { display: none; animation: fadeIn 0.4s ease; }
+        .tab-content.active { display: block; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h1 { font-weight: 800; font-size: 2.2rem; letter-spacing: -1px; margin-bottom: 30px; }
+        h3 { font-weight: 700; margin-top: 0; color: var(--dark); }
+
+        /* Tables & Cards */
+        .admin-card { 
+            background: white; 
+            border-radius: 24px; 
+            padding: 30px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.02); 
+            margin-bottom: 30px; 
+            border: 1px solid var(--border); 
+        }
+
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        th { text-align: left; color: var(--text-gray); font-size: 0.75rem; padding: 15px; border-bottom: 2px solid var(--bg-body); text-transform: uppercase; font-weight: 800; letter-spacing: 1px; }
+        td { padding: 15px; border-bottom: 1px solid var(--bg-body); font-size: 0.95rem; }
+
+        /* Form Styling */
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px; }
+        input, select, textarea { 
+            padding: 14px 20px; 
+            border: 2px solid var(--border); 
+            border-radius: 14px; 
+            width: 100%; 
+            box-sizing: border-box; 
+            font-family: inherit; 
+            transition: 0.3s;
+            outline: none;
+            background: #fafafa;
+        }
+        input:focus, textarea:focus { border-color: var(--primary); background: white; }
+
+        .btn-primary { 
+            background: var(--primary); 
+            color: white; 
+            border: none; 
+            padding: 14px 28px; 
+            border-radius: 14px; 
+            font-weight: 700; 
+            cursor: pointer; 
+            transition: 0.3s; 
+        }
+        .btn-primary:hover { 
+            background: var(--primary-hover); 
+            transform: translateY(-2px); 
+            box-shadow: 0 8px 20px rgba(251, 111, 146, 0.3); 
+        }
+        
+        /* Badges */
+        .badge { padding: 6px 12px; border-radius: 100px; font-size: 0.75rem; font-weight: 800; text-transform: uppercase; }
+        .badge-asal { background: var(--primary-light); color: var(--primary); }
+        .badge-active { background: #dcfce7; color: #166534; }
+        .badge-disabled { background: #fee2e2; color: #991b1b; }
+        
+        /* Modal Edit Food */
+        #editModal { 
+            display:none; 
+            position:fixed; 
+            top:0; left:0; width:100%; height:100%; 
+            background:rgba(251, 111, 146, 0.2); 
+            backdrop-filter: blur(4px);
+            z-index:1000; 
+            justify-content:center; 
+            align-items:center; 
+        }
+        .modal-content {
+            background: white; 
+            padding: 40px; 
+            border-radius: 28px; 
+            width: 550px; 
+            max-width: 90%;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="sidebar">
+        <div class="brand">🌶️ Admin Foodify</div>
+        <div class="nav-wrapper">
+            <div class="nav-link active" onclick="switchTab('tab-foods', this)">🍔 Kelola Makanan</div>
+            <div class="nav-link" onclick="switchTab('tab-users', this)">👥 Kelola User</div>
+        </div>
+        <div class="logout-link" onclick="logout()">🚪 Logout</div>
+    </div>
+
+    <div class="content">
+        
+        <div id="tab-foods" class="tab-content active">
+            <h1>🍔 Kelola Menu Makanan</h1>
+            
+            <div class="admin-card">
+                <h3>Tambah Produk Baru</h3>
+                <div class="form-grid">
+                    <input type="text" id="foodName" placeholder="Nama Makanan (Contoh: Rendang)">
+                    <input type="text" id="foodAsal" placeholder="Asal Masakan (Contoh: Padang)">
+                </div>
+                <input type="text" id="foodImg" placeholder="URL Gambar (https://...)" style="margin-bottom:15px;">
+                <textarea id="foodDesc" placeholder="Deskripsi makanan..." style="margin-bottom:15px; height: 100px;"></textarea>
+                <button class="btn-primary" onclick="addFood()">Simpan Produk</button>
+            </div>
+
+            <div class="admin-card">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Gambar</th>
+                            <th>Nama & Asal</th>
+                            <th>Deskripsi</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="foodTableBody"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="tab-users" class="tab-content">
+            <h1>👥 Manajemen User & API Keys</h1>
+            <div class="admin-card">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Nama User</th>
+                            <th>API Key Terakhir</th>
+                            <th>Status Akun</th>
+                        </tr>
+                    </thead>
+                    <tbody id="userTableBody"></tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+    <div id="editModal" onclick="if(event.target === this) closeEditModal()">
+        <div class="modal-content">
+            <h3>Edit Makanan</h3>
+            <div class="form-grid">
+                <input type="text" id="editFoodName" placeholder="Nama Makanan">
+                <input type="text" id="editFoodAsal" placeholder="Asal Masakan">
+            </div>
+            <input type="text" id="editFoodImg" placeholder="URL Gambar" style="margin-bottom:15px;">
+            <textarea id="editFoodDesc" placeholder="Deskripsi makanan..." style="margin-bottom:15px; height:100px;"></textarea>
+            <div style="display: flex; gap: 10px;">
+                <button class="btn-primary" onclick="updateFood()" style="flex: 1;">Update Produk</button>
+                <button style="flex: 1; background:#b2bec3;" class="btn-primary" onclick="closeEditModal()">Batal</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        window.onload = () => {
+            const role = localStorage.getItem('userRole');
+            if (role !== 'admin') {
+                alert("Akses Ditolak!");
+                window.location.href = "/";
+                return;
+            }
+            loadFoods();
+            loadUsers();
+        };
+
+        function switchTab(tabId, el) {
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            el.classList.add('active');
+        }
+
+        async function loadFoods() {
+            try {
+                const res = await fetch('/api/admin/foods');
+                const foods = await res.json();
+                document.getElementById('foodTableBody').innerHTML = foods.map(f => `
+                    <tr>
+                        <td><img src="${f.gambar_url}" style="width:60px; height:60px; border-radius:12px; object-fit:cover;" onerror="this.src='https://via.placeholder.com/60'"></td>
+                        <td>
+                            <strong>${f.nama}</strong><br>
+                            <span class="badge badge-asal">${f.asal}</span>
+                        </td>
+                        <td style="color:#636E72; max-width:300px; font-size:0.85rem;">${f.deskripsi}</td>
+                        <td>
+                            <button style="color:#FB6F92; border:none; background:none; cursor:pointer; font-weight:700; margin-right:10px;" onclick="editFood(${f.id}, '${f.nama}', '${f.asal}', '${f.gambar_url}', '${f.deskripsi}')">Edit</button>
+                            <button style="color:#ff7675; border:none; background:none; cursor:pointer; font-weight:700;" onclick="deleteFood(${f.id})">Hapus</button>
+                        </td>
+                    </tr>
+                `).join('');
+            } catch (err) { console.error(err); }
+        }
+
+        async function addFood() {
+            const payload = {
+                nama: document.getElementById('foodName').value,
+                asal: document.getElementById('foodAsal').value,
+                gambar_url: document.getElementById('foodImg').value,
+                deskripsi: document.getElementById('foodDesc').value
+            };
+            if(!payload.nama || !payload.asal || !payload.gambar_url || !payload.deskripsi) return alert("Harap isi semua data!");
+            try {
+                const res = await fetch('/api/admin/foods', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(payload)
+                });
+                if (res.ok) { alert("Produk disimpan!"); loadFoods(); }
+            } catch (err) { alert(err.message); }
+        }
+
+        async function deleteFood(id) {
+            if(confirm('Hapus menu ini?')) {
+                await fetch(`/api/admin/foods/${id}`, { method: 'DELETE' });
+                loadFoods();
+            }
+        }
+
+        let editingFoodId = null;
+        function editFood(id, nama, asal, gambar_url, deskripsi) {
+            editingFoodId = id;
+            document.getElementById('editFoodName').value = nama;
+            document.getElementById('editFoodAsal').value = asal;
+            document.getElementById('editFoodImg').value = gambar_url;
+            document.getElementById('editFoodDesc').value = deskripsi;
+            document.getElementById('editModal').style.display = 'flex';
+        }
+
+        function closeEditModal() {
+            document.getElementById('editModal').style.display = 'none';
+        }
+
+        async function updateFood() {
+            const payload = {
+                nama: document.getElementById('editFoodName').value,
+                asal: document.getElementById('editFoodAsal').value,
+                gambar_url: document.getElementById('editFoodImg').value,
+                deskripsi: document.getElementById('editFoodDesc').value
+            };
+            try {
+                await fetch(`/api/admin/foods/${editingFoodId}`, {
+                    method: 'PUT',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(payload)
+                });
+                closeEditModal();
+                loadFoods();
+            } catch (err) { alert(err.message); }
+        }
+
+        async function loadUsers() {
+            try {
+                const res = await fetch('/api/admin/users');
+                const users = await res.json();
+                document.getElementById('userTableBody').innerHTML = users.map(u => `
+                    <tr>
+                        <td><strong>${u.name}</strong></td>
+                        <td style="font-family:monospace; color:#FB6F92;">${u.latest_key || '-'}</td>
+                        <td><span class="badge ${u.status === 'ACTIVE' ? 'badge-active' : 'badge-disabled'}">${u.status}</span></td>
+                    </tr>
+                `).join('');
+            } catch (err) { console.error(err); }
+        }
+
+        function logout() { localStorage.clear(); window.location.href = '/'; }
+    </script>
+</body>
+</html>
