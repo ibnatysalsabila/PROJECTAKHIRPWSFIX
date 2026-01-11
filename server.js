@@ -114,3 +114,23 @@ app.get('/api/keys/:user_id', async (req, res) => {
     const [rows] = await db.execute('SELECT * FROM apikeys WHERE user_id = ? ORDER BY created_at DESC', [req.params.user_id]);
     res.json(rows);
 });
+
+// ADMIN - GET ALL USERS WITH LATEST API KEY
+app.get('/api/admin/users', async (req, res) => {
+    try {
+        const [users] = await db.execute('SELECT id, name, status FROM users WHERE role = "user"');
+        
+        // Ambil latest API key untuk setiap user
+        const usersWithKeys = await Promise.all(users.map(async (user) => {
+            const [keys] = await db.execute('SELECT key_value FROM apikeys WHERE user_id = ? ORDER BY created_at DESC LIMIT 1', [user.id]);
+            return {
+                id: user.id,
+                name: user.name,
+                status: user.status || 'ACTIVE',
+                latest_key: keys.length > 0 ? keys[0].key_value : null
+            };
+        }));
+        
+        res.json(usersWithKeys);
+    } catch (err) { res.status(500).json({ error: err.message }); }
+});
