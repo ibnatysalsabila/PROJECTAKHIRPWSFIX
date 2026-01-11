@@ -180,3 +180,10 @@ app.get('/api/foods', async (req, res) => {
     }
 });
 
+// ADMIN ROUTES 
+app.get('/api/admin/foods', productController.getAllProducts); // List semua foods untuk admin
+app.post('/api/admin/foods', productController.createProduct);
+app.put('/api/admin/foods/:id', productController.updateProduct);
+app.delete('/api/admin/foods/:id', productController.deleteProduct);
+
+app.listen(port, () => console.log(`🚀 Server: http://localhost:${port}`));
