@@ -134,3 +134,13 @@ app.get('/api/admin/users', async (req, res) => {
         res.json(usersWithKeys);
     } catch (err) { res.status(500).json({ error: err.message }); }
 });
+
+// ADMIN - UPDATE USER STATUS
+app.put('/api/admin/users/:id/status', async (req, res) => {
+    try {
+        const { status } = req.body;
+        await db.execute('UPDATE users SET status = ? WHERE id = ?', [status, req.params.id]);
+        res.json({ success: true });
+    } catch (err) { res.status(500).json({ error: err.message }); }
+});
+
