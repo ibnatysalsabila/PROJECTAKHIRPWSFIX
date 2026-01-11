@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Developer Docs - Foodify API</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-pink: #FB6F92;
+            --soft-pink: #FFE5EC;
+            --vibrant-pink: #FF8FAB;
+            --dark: #2D3436;
+            --text-gray: #636E72;
+            --bg-light: #FFF0F3;
+            --border: #FCE1E8;
+            --sidebar-width: 300px;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            margin: 0;
+            display: flex;
+            background-color: white;
+            color: var(--dark);
+            scroll-behavior: smooth;
+        }
+
+        /* Sidebar Styling */
+        .sidebar {
+            width: var(--sidebar-width);
+            height: 100vh;
+            border-right: 1px solid var(--border);
+            position: fixed;
+            padding: 40px 30px;
+            box-sizing: border-box;
+            background: white;
+            overflow-y: auto;
+        }
+
+        .brand {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--primary-pink);
+            margin-bottom: 50px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+
+        .nav-group {
+            margin-bottom: 30px;
+        }
+
+        .nav-group-title {
+            font-size: 0.75rem;
+            font-weight: 800;
+            color: #b2bec3;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .nav-link {
+            display: block;
+            padding: 10px 0;
+            color: var(--text-gray);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: 0.2s;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            color: var(--primary-pink);
+        }
+
+        .divider {
+            height: 1px;
+            background: var(--border);
+            margin: 25px 0;
+        }
+
+        .back-home {
+            color: var(--text-gray);
+            text-decoration: none;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            margin-top: 20px;
+        }
+
+        /* Main Content Styling */
+        .main {
+            margin-left: var(--sidebar-width);
+            padding: 80px 100px;
+            width: 100%;
+            max-width: 900px;
+        }
+
+        section {
+            margin-bottom: 100px;
+            scroll-margin-top: 80px;
+        }
+
+        h1 { font-size: 3rem; font-weight: 800; margin-bottom: 24px; letter-spacing: -1.5px; }
+        h2 { font-size: 2.2rem; font-weight: 800; margin-top: 0; margin-bottom: 20px; letter-spacing: -1px; }
+        p { line-height: 1.8; color: var(--text-gray); font-size: 1.1rem; margin-bottom: 25px; }
+
+        /* Badge */
+        .badge {
+            background: var(--soft-pink);
+            color: var(--primary-pink);
+            padding: 6px 14px;
+            border-radius: 100px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            display: inline-block;
+            margin-bottom: 15px;
+        }
+
+        /* Endpoint Card */
+        .endpoint-card {
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 35px;
+            margin-top: 30px;
+            box-shadow: 0 10px 30px rgba(251, 111, 146, 0.03);
+        }
+
+        .method-tag {
+            background: var(--primary-pink);
+            color: white;
+            padding: 5px 12px;
+            border-radius: 8px;
+            font-weight: 800;
+            font-size: 0.8rem;
+            margin-right: 12px;
+        }
+
+        .endpoint-url {
+            font-family: 'JetBrains Mono', 'Fira Code', monospace;
+            background: #2D3436;
+            color: #FF8FAB;
+            padding: 18px 25px;
+            border-radius: 14px;
+            display: block;
+            margin: 20px 0;
+            font-size: 0.9rem;
+            overflow-x: auto;
+            border: 1px solid #444;
+        }
+
+        /* Tables */
+        .param-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 25px;
+        }
+
+        .param-table th {
+            text-align: left;
+            padding: 15px;
+            border-bottom: 2px solid var(--border);
+            color: var(--dark);
+            font-size: 0.85rem;
+            font-weight: 800;
+            text-transform: uppercase;
+        }
+
+        .param-table td {
+            padding: 20px 15px;
+            border-bottom: 1px solid var(--border);
+            font-size: 0.95rem;
+        }
+
+        code {
+            background: var(--soft-pink);
+            padding: 3px 8px;
+            border-radius: 6px;
+            color: var(--primary-pink);
+            font-family: monospace;
+            font-weight: 600;
+        }
+
+        /* JSON Highlight */
+        .json-block {
+            background: #2D3436;
+            color: #dfe6e9;
+            padding: 25px;
+            border-radius: 14px;
+            font-family: monospace;
+            line-height: 1.6;
+        }
+
+        .json-key { color: #FF8FAB; }
+        .json-val { color: #81ecec; }
+
+    </style>
+</head>
+<body>
+
+    <div class="sidebar">
+        <a href="/" class="brand">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect width="24" height="24" rx="6" fill="#FB6F92"/>
+                <path d="M7 12L10 15L17 8" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Foodify.
+        </a>
+        
+        <div class="nav-group">
+            <span class="nav-group-title">Getting Started</span>
+            <a href="#introduction" class="nav-link active">Introduction</a>
+            <a href="#authentication" class="nav-link">Authentication</a>
+        </div>
+
+        <div class="nav-group">
+            <span class="nav-group-title">Resources</span>
+            <a href="#endpoints" class="nav-link">Food Endpoints</a>
+        </div>
+
+        <div class="divider"></div>
+        
+        <a href="/login" class="nav-link" style="color: var(--primary-pink)">Login →</a>
+        <a href="/" class="back-home">← Back to Home</a>
+    </div>
+
+    <div class="main">
+        <section id="introduction">
+            <span class="badge">v1.0.0</span>
+            <h1>Introduction</h1>
+            <p>
+                Selamat datang di platform pengembang <strong>Foodify</strong>. API kami dirancang untuk memberikan akses cepat dan terstruktur data makanan Nusantara.
+            </p>
+            <p>
+                Gunakan API ini untuk membangun marketplace makanan nusantara. Kami menggunakan standar RESTful dengan respon berformat JSON yang dioptimalkan untuk performa tinggi.
+            </p>
+        </section>
+
+        <section id="authentication">
+            <h2>Authentication</h2>
+            <p>
+                Setiap request ke Foodify API wajib menyertakan API Key yang valid. Anda dapat mendapatkan kunci ini melalui dashboard pengembang setelah melakukan registrasi.
+            </p>
+
+            <div class="endpoint-card" style="background: #FFF9FA;">
+                <p style="margin:0; font-weight: 700; color: var(--primary-pink);">⚠️ Security Note</p>
+                <p style="margin-top:10px; font-size: 0.95rem; margin-bottom: 0;">
+                    Jangan pernah membagikan API Key Anda di sisi klien (frontend) publik. Gunakan server-side proxy jika memungkinkan untuk menjaga kerahasiaan kunci Anda.
+                </p>
+            </div>
+
+            <h3 style="margin-top: 40px; font-weight: 700;">Query Parameter</h3>
+            <p>Tambahkan parameter <code>key</code> pada setiap URL endpoint Anda.</p>
+            <div class="endpoint-url">
+                https://api.foodify.com/v1/resource?key=YOUR_API_KEY
+            </div>
+        </section>
+
+        <section id="endpoints">
+            <h2>Endpoints</h2>
+            
+            <div class="endpoint-card">
+                <div style="display: flex; align-items: center;">
+                    <span class="method-tag">GET</span>
+                    <span style="font-weight: 800; font-size: 1.3rem;">Get All Foods</span>
+                </div>
+                <p style="margin-top: 15px; font-size: 1rem;">Endpoint ini mengembalikan daftar lengkap koleksi makanan dalam database Foodify.</p>
+                
+                <span style="font-weight: 700; font-size: 0.85rem; color: #b2bec3; text-transform: uppercase;">Request URL</span>
+                <div class="endpoint-url">
+                    GET /api/foods?key={api_key}
+                </div>
+
+                <span style="font-weight: 700; font-size: 0.85rem; color: #b2bec3; text-transform: uppercase;">Parameters</span>
+                <table class="param-table">
+                    <thead>
+                        <tr>
+                            <th>Parameter</th>
+                            <th>Type</th>
+                            <th>Status</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>key</code></td>
+                            <td>String</td>
+                            <td style="color: #e11d48; font-weight: 700;">Required</td>
+                            <td>API Key unik untuk mengidentifikasi aplikasi Anda.</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <span style="font-weight: 700; font-size: 0.85rem; color: #b2bec3; text-transform: uppercase; margin-top: 40px; display: block;">Response Example</span>
+                <div class="json-block">
+[
+  {
+    "<span class="json-key">id</span>": <span class="json-val">102</span>,
+    "<span class="json-key">nama</span>": <span class="json-val">"Sate Ayam Madura"</span>,
+    "<span class="json-key">asal</span>": <span class="json-val">"Jawa Timur"</span>,
+    "<span class="json-key">deskripsi</span>": <span class="json-val">"Sate Ayam Khas Madura"</span>,
+    "<span class="json-key">gambar_url</span>": <span class="json-val">"https://cdn.foodify.com/sate.jpg"</span>
+  }
+]
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        // Smooth scroll active state
+        window.addEventListener('scroll', () => {
+            let current = "";
+            const sections = document.querySelectorAll("section");
+            sections.forEach((section) => {
+                const sectionTop = section.offsetTop;
+                if (pageYOffset >= sectionTop - 150) {
+                    current = section.getAttribute("id");
+                }
+            });
+
+            document.querySelectorAll(".nav-link").forEach((link) => {
+                link.classList.remove("active");
+                if (link.getAttribute("href").includes(current)) {
+                    link.classList.add("active");
+                }
+            });
+        });
+    </script>
+</body>
+</html>
