@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - Foodify Developer</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-pink: #FB6F92;
+            --soft-pink: #FFE5EC;
+            --text-dark: #2D3436;
+            --text-gray: #636E72;
+            --bg-gradient: linear-gradient(135deg, #FFF0F3 0%, #FFFFFF 100%);
+        }
+
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            background: var(--bg-gradient); 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            height: 100vh; 
+            margin: 0; 
+            color: var(--text-dark);
+        }
+
+        .register-card { 
+            background: white; 
+            padding: 50px 40px; 
+            border-radius: 24px; 
+            box-shadow: 0 20px 40px rgba(251, 111, 146, 0.1); 
+            width: 100%; 
+            max-width: 400px; 
+            text-align: center;
+            border: 1px solid var(--soft-pink);
+        }
+
+        .logo-small {
+            color: var(--primary-pink);
+            font-weight: 800;
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+
+        h2 { 
+            font-weight: 800; 
+            font-size: 1.8rem; 
+            margin: 0 0 10px 0;
+        }
+
+        p.subtitle { 
+            color: var(--text-gray); 
+            margin-bottom: 30px; 
+            font-size: 0.95rem;
+        }
+
+        input { 
+            width: 100%; 
+            padding: 14px 18px; 
+            margin-bottom: 15px; 
+            border: 2px solid #F1F5F9; 
+            border-radius: 14px; 
+            box-sizing: border-box; 
+            background-color: #F8FAFC; 
+            font-family: inherit;
+            font-size: 0.95rem;
+            transition: 0.3s;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--primary-pink);
+            background-color: white;
+            box-shadow: 0 0 0 4px var(--soft-pink);
+        }
+
+        button { 
+            width: 100%; 
+            padding: 16px; 
+            background: linear-gradient(45deg, var(--primary-pink), #FF8FAB); 
+            color: white; 
+            border: none; 
+            border-radius: 14px; 
+            font-weight: 700; 
+            font-size: 1rem;
+            cursor: pointer; 
+            transition: 0.3s; 
+            box-shadow: 0 8px 15px rgba(251, 111, 146, 0.3);
+            margin-top: 10px;
+        }
+
+        button:hover { 
+            transform: translateY(-2px);
+            box-shadow: 0 12px 20px rgba(251, 111, 146, 0.4);
+        }
+
+        .footer-text {
+            margin-top: 25px;
+            font-size: 0.9rem;
+            color: var(--text-gray);
+        }
+
+        a { 
+            color: var(--primary-pink); 
+            text-decoration: none; 
+            font-weight: 700; 
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="register-card">
+        <a href="/" class="logo-small">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect width="24" height="24" rx="6" fill="#FB6F92"/>
+                <path d="M7 12L10 15L17 8" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Foodify.
+        </a>
+        <h2>Create Account</h2>
+        <p class="subtitle">Join the elite community of food developers.</p>
+        
+        <input type="text" id="regName" placeholder="Username">
+        <input type="password" id="regPass" placeholder="Password">
+        
+        <button onclick="register()">Get Started Now</button>
+        
+        <p class="footer-text">Already have an account? <a href="/login">Login</a></p>
+    </div>
+
+    <script>
+        async function register() {
+            const name = document.getElementById('regName').value;
+            const password = document.getElementById('regPass').value;
+            if (!name || !password) return alert("Please fill in all fields!");
+
+            try {
+                const res = await fetch('/api/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, password })
+                });
+
+                const data = await res.json();
+                if (data.success) {
+                    alert("Registration Successful!");
+                    window.location.href = '/login';
+                } else { 
+                    alert(data.message); 
+                }
+            } catch (err) {
+                alert("Something went wrong. Please try again.");
+            }
+        }
+    </script>
+</body>
+</html>
