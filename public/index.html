@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Foodify - Food & Nutrition Developer API</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root { 
+            /* Palet Warna Sesuai Referensi Gambar */
+            --color-1: #FFE5EC; /* Pink sangat muda */
+            --color-2: #FFC2D1; /* Pink muda */
+            --color-3: #FFB3C6; /* Pink medium */
+            --color-4: #FF8FAB; /* Pink terang */
+            --color-5: #FB6F92; /* Pink utama (Vibrant) */
+            
+            --dark: #2D3436; 
+            --gray: #636E72;
+            --white: #FFFFFF;
+        }
+        
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            margin: 0; 
+            /* Background gradasi dari palet warna */
+            background: linear-gradient(135deg, var(--color-1) 0%, #FFFFFF 50%, var(--color-2) 100%); 
+            color: var(--dark); 
+            min-height: 100vh;
+            overflow-x: hidden; 
+        }
+
+        /* Navbar */
+        nav { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center;
+            padding: 30px 10%; 
+        }
+        
+        .logo {
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: var(--color-5);
+            letter-spacing: -1.5px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 35px;
+            align-items: center;
+        }
+
+        .nav-links a { 
+            text-decoration: none; 
+            color: var(--gray); 
+            font-weight: 600; 
+            transition: 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: var(--color-5);
+        }
+
+        .btn-login { 
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            color: var(--color-5); 
+            border: 2px solid var(--color-5); 
+            padding: 10px 25px; 
+            border-radius: 14px; 
+            font-weight: 700;
+            text-decoration: none;
+            transition: 0.3s; 
+        }
+
+        .btn-login:hover { 
+            background: var(--color-5); 
+            color: white; 
+            box-shadow: 0 10px 20px rgba(251, 111, 146, 0.3);
+        }
+
+        /* Hero Section */
+        .container { 
+            max-width: 1200px; 
+            margin: 0 auto; 
+            display: flex; 
+            align-items: center; 
+            padding: 40px 50px 100px 50px; 
+            gap: 60px;
+        }
+        
+        .hero-content { flex: 1; }
+
+        .badge {
+            background: var(--color-3);
+            color: white;
+            padding: 6px 14px;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: 800;
+            display: inline-block;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 10px rgba(255, 179, 198, 0.4);
+        }
+
+        .hero-content h1 { 
+            font-size: 4rem; 
+            font-weight: 800; 
+            line-height: 1.1; 
+            margin: 0; 
+            color: var(--dark); 
+        }
+
+        .hero-content h1 span { 
+            background: linear-gradient(to right, var(--color-5), var(--color-4));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-content p { 
+            font-size: 1.1rem; 
+            color: var(--gray); 
+            margin: 30px 0; 
+            line-height: 1.7; 
+            max-width: 520px; 
+        }
+
+        /* Button Group */
+        .btn-group { display: flex; gap: 15px; }
+        
+        .btn { 
+            padding: 18px 38px; 
+            border-radius: 16px; 
+            font-weight: 700; 
+            text-decoration: none; 
+            transition: 0.4s; 
+            font-size: 1rem;
+        }
+
+        .btn-primary { 
+            background: linear-gradient(45deg, var(--color-5), var(--color-4));
+            color: white; 
+            box-shadow: 0 12px 25px rgba(251, 111, 146, 0.4);
+        }
+
+        .btn-primary:hover { 
+            transform: translateY(-5px); 
+            box-shadow: 0 15px 30px rgba(251, 111, 146, 0.6);
+        }
+
+        .btn-outline { 
+            background: white; 
+            color: var(--dark);
+            border: 2px solid var(--color-1);
+        }
+
+        .btn-outline:hover { 
+            border-color: var(--color-5);
+            color: var(--color-5);
+            transform: translateY(-3px); 
+        }
+
+        /* Hero Visual - Dashboard Style */
+        .hero-visual { 
+            flex: 1.2; 
+            position: relative; 
+            display: flex; 
+            justify-content: center; 
+        }
+
+        /* Floating Cards Effect */
+        .dashboard-mockup {
+            background: white;
+            border-radius: 24px;
+            padding: 15px;
+            box-shadow: 0 40px 80px rgba(0,0,0,0.1);
+            position: relative;
+            z-index: 2;
+            border: 8px solid rgba(255, 255, 255, 0.5);
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .dashboard-mockup img {
+            width: 100%;
+            border-radius: 12px;
+            display: block;
+        }
+
+        /* Decorative Blobs */
+        .blob-1 {
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            background: var(--color-2);
+            filter: blur(60px);
+            top: -20px;
+            right: -20px;
+            z-index: 1;
+            opacity: 0.6;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-15px) rotate(1deg); }
+            100% { transform: translateY(0px) rotate(0deg); }
+        }
+
+        @media (max-width: 992px) {
+            .container { flex-direction: column; text-align: center; padding-top: 40px; }
+            .hero-content h1 { font-size: 2.8rem; }
+            .btn-group { justify-content: center; }
+            .nav-links { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="logo">
+            <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect width="32" height="32" rx="8" fill="#FB6F92"/>
+                <path d="M10 16L14 20L22 12" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Foodify.
+        </div>
+        <div class="nav-links">
+            <a href="/docs">Docs</a>
+            <a href="/register">Sign Up</a>
+            <a href="/login" class="btn-login">Login</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="hero-content">
+            <div class="badge">NEW UPDATE: JSON v2.0 READY</div>
+            <h1>Build Future <br><span>Foodify</span> Fast</h1>
+            <p>API Makanan Nusantara.</p>
+            
+            <div class="btn-group">
+                <a href="/register" class="btn btn-primary">Registrasi➜</a>
+                <a href="/docs" class="btn btn-outline">Dokumentasi</a>
+            </div>
+        </div>
+
+        <div class="hero-visual">
+            <div class="blob-1"></div>
+            <div class="dashboard-mockup">
+                <img src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=500&auto=format&fit=crop" alt="Mobile Preview">
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
